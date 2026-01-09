@@ -113,7 +113,9 @@
     </div>
 
     <footer class="fixed bottom-0 left-0 w-full p-4 bg-[#1e293b]/90 backdrop-blur-md border-t border-slate-700 z-50">
-        <button class="w-full bg-green-600 py-3 rounded-full font-bold shadow-lg">ビルドを共有する</button>
+        <button id="share-btn" onclick="generateShareUrl()" class="w-full bg-green-600 py-3 rounded-full font-bold shadow-lg active:scale-95 transition-transform">
+        ビルドを共有する
+        </button>
     </footer>
 
     <script>
@@ -185,6 +187,82 @@
             }
             document.getElementById('runeModal').classList.add('active');
         }
+
+        // 現在の選択状態を管理する変数
+        let selections = {
+            hero: { main: '', inherit1: '', inherit2: '' },
+            equip: { weapon: '', helmet: '', amulet: '', armor: '', ring: '', boots: '' },
+            runes: { E: [null,null,null,null], A: [null,null,null,null], B: [null,null], M: [null,null,null] }
+        };
+        
+        // --- 選択時に値を保存する処理を追加 ---
+        
+        function selectHero(hero) {
+            selections.hero[currentHeroSlot] = hero.img; // 画像名を保存
+            renderHero(currentHeroSlot, hero.img, hero.name);
+            closeHeroModal();
+        }
+        
+        function selectSeries(series) {
+            const imgName = `${series}_${currentEquipSlot}.png`;
+            selections.equip[currentEquipSlot] = imgName;
+            renderEquip(currentEquipSlot, imgName);
+            closeEquipModal();
+        }
+        
+        // ルーン選択時のonclick内に追加
+        // (openRuneModal内の d.onclick 部分を以下のように書き換え)
+        d.onclick = () => {
+            const imgName = `rune_${type}${i}.jpg`;
+            selections.runes[type][idx] = imgName;
+            renderRune(type, idx, imgName);
+            document.getElementById('runeModal').classList.remove('active');
+        };
+        
+        // --- 表示を更新する共通関数 ---
+        function renderHero(slot, img, name) {
+            const s = document.getElementById(`slot-${slot}`);
+            s.innerHTML = `<img src="assets/${img}" class="w-full rounded-md shadow-lg">`;
+            s.classList.add('selected-border');
+        }
+        function renderEquip(slot, img) {
+            const s = document.getElementById(`slot-${slot}`);
+            s.innerHTML = `<img src="assets/${img}" class="h-full object-contain">`;
+            s.classList.add('selected-border');
+        }
+        function renderRune(type, idx, img) {
+            const s = document.getElementById(`slot-${type}-${idx}`);
+            s.innerHTML = `<img src="assets/${img}" class="w-full rounded-md">`;
+            s.classList.add('selected-border');
+        }
+        
+        // --- URL生成機能 ---
+        function generateShareUrl() {
+            const data = btoa(JSON.stringify(selections)); // データを短縮化
+            const url = `${window.location.origin}${window.location.pathname}?b=${data}`;
+            
+            navigator.clipboard.writeText(url).then(() => {
+                alert("ビルドURLをクリップボードにコピーしました！クランメンバーに共有してください。");
+            });
+        }
+        
+        // --- 読み込み時にURLから復元 ---
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            const buildData = params.get('b');
+            if (buildData) {
+                try {
+                    selections = JSON.parse(atob(buildData));
+                    // 復元処理
+                    Object.keys(selections.hero).forEach(s => selections.hero[s] && renderHero(s, selections.hero[s], ""));
+                    Object.keys(selections.equip).forEach(s => selections.equip[s] && renderEquip(s, selections.equip[s]));
+                    Object.keys(selections.runes).forEach(t => {
+                        selections.runes[t].forEach((img, i) => img && renderRune(t, i, img));
+                    });
+                } catch(e) { console.error("復元失敗", e); }
+            }
+        };
     </script>
 </body>
 </html>
+
