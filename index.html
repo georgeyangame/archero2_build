@@ -2,83 +2,128 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>アーチャー伝説2 ビルド共有</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .game-card { background: linear-gradient(145deg, #2d3748, #1a202c); }
-        select { appearance: none; cursor: pointer; }
+        .custom-scrollbar::-webkit-scrollbar { height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 10px; }
+        .hero-card.selected { border-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+        .inherit-card.selected { border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 font-sans">
+<body class="bg-[#0f172a] text-slate-100 min-h-screen pb-10">
 
-    <header class="text-center mb-6">
-        <h1 class="text-2xl font-black text-green-500 tracking-tighter">ARCHER 2 BUILDER</h1>
-        <p class="text-xs text-slate-400">クラン専用ビルド共有ツール</p>
+    <header class="p-4 text-center border-b border-slate-800 bg-[#1e293b] sticky top-0 z-50">
+        <h1 class="text-xl font-black text-green-500 tracking-wider italic">ARCHER 2 BUILDER</h1>
+        <p class="text-[10px] text-slate-400">CLAN EXCLUSIVE TOOLS</p>
     </header>
 
-    <main class="max-w-md mx-auto space-y-6">
+    <main class="p-4 max-w-md mx-auto space-y-8">
         
-        <section class="game-card p-5 rounded-2xl shadow-xl border border-slate-700">
-            <h2 class="text-sm font-bold text-green-400 mb-4 flex items-center">
-                <span class="mr-2">👤</span> キャラクター構成
-            </h2>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-1 ml-1">Main Hero</label>
-                    <select id="mainHero" class="hero-select bg-slate-800 w-full p-3 rounded-xl border border-slate-600 focus:border-green-500 outline-none transition-all">
-                        <option value="">選択してください</option>
-                    </select>
+        <section>
+            <div class="flex items-center mb-3">
+                <span class="w-1 h-4 bg-green-500 mr-2"></span>
+                <h2 class="text-sm font-bold uppercase tracking-widest text-slate-300">Main Hero</h2>
+            </div>
+            <div id="main-hero-grid" class="grid grid-cols-4 gap-2">
                 </div>
+        </section>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-1 ml-1">Inherit 1</label>
-                        <select id="inherit1" class="hero-select bg-slate-800 w-full p-2.5 rounded-xl border border-slate-600 text-sm outline-none">
-                            <option value="">なし</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-1 ml-1">Inherit 2</label>
-                        <select id="inherit2" class="hero-select bg-slate-800 w-full p-2.5 rounded-xl border border-slate-600 text-sm outline-none">
-                            <option value="">なし</option>
-                        </select>
-                    </div>
+        <section class="space-y-6">
+            <div>
+                <div class="flex items-center mb-3">
+                    <span class="w-1 h-4 bg-blue-500 mr-2"></span>
+                    <h2 class="text-sm font-bold uppercase tracking-widest text-slate-300">Inherit 1</h2>
                 </div>
+                <div id="inherit1-grid" class="flex overflow-x-auto gap-2 pb-2 custom-scrollbar">
+                    </div>
+            </div>
+
+            <div>
+                <div class="flex items-center mb-3">
+                    <span class="w-1 h-4 bg-blue-500 mr-2"></span>
+                    <h2 class="text-sm font-bold uppercase tracking-widest text-slate-300">Inherit 2</h2>
+                </div>
+                <div id="inherit2-grid" class="flex overflow-x-auto gap-2 pb-2 custom-scrollbar">
+                    </div>
             </div>
         </section>
 
-        <section class="opacity-50">
-            <h2 class="text-sm font-bold text-slate-400 mb-2">EQUIPMENT (Coming Soon...)</h2>
-            <div class="grid grid-cols-3 gap-2">
-                <div class="aspect-square bg-slate-800 rounded-lg border border-dashed border-slate-700 flex items-center justify-center text-[10px]">武器</div>
-                <div class="aspect-square bg-slate-800 rounded-lg border border-dashed border-slate-700 flex items-center justify-center text-[10px]">アミュ</div>
-                <div class="aspect-square bg-slate-800 rounded-lg border border-dashed border-slate-700 flex items-center justify-center text-[10px]">指輪</div>
+        <section class="pt-4 border-t border-slate-800">
+            <h2 class="text-xs font-bold text-slate-500 mb-4 text-center">EQUIPMENT SLOTS</h2>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="aspect-square bg-slate-800/50 rounded-xl border border-slate-700 flex flex-col items-center justify-center text-[10px] text-slate-500 italic"><span>Weapon</span></div>
+                <div class="aspect-square bg-slate-800/50 rounded-xl border border-slate-700 flex flex-col items-center justify-center text-[10px] text-slate-500 italic"><span>Amulet</span></div>
+                <div class="aspect-square bg-slate-800/50 rounded-xl border border-slate-700 flex flex-col items-center justify-center text-[10px] text-slate-500 italic"><span>Ring</span></div>
+                <div class="aspect-square bg-slate-800/50 rounded-xl border border-slate-700 flex flex-col items-center justify-center text-[10px] text-slate-500 italic"><span>Helmet</span></div>
+                <div class="aspect-square bg-slate-800/50 rounded-xl border border-slate-700 flex flex-col items-center justify-center text-[10px] text-slate-500 italic"><span>Armor</span></div>
+                <div class="aspect-square bg-slate-800/50 rounded-xl border border-slate-700 flex flex-col items-center justify-center text-[10px] text-slate-500 italic"><span>Boots</span></div>
             </div>
         </section>
 
     </main>
 
+    <footer class="fixed bottom-0 left-0 w-full p-4 bg-[#1e293b]/90 backdrop-blur-md border-t border-slate-700">
+        <button class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-full shadow-lg transition-transform active:scale-95">
+            ビルドを共有する
+        </button>
+    </footer>
+
     <script>
-        // キャラクターリスト
         const heroes = [
-            "アレックス", "ネコ忍者", "ヘリックス", "ヘラ", "ミーラ", 
-            "神眷の者", "ドラクーラ", "ローラ", "ロキ", "フィンクス", 
-            "オッター", "魔王アトレウス", "ソー", "クレオ"
+            { name: "アレックス", img: "alex.png" },
+            { name: "ネコ忍者", img: "nyanja.png" },
+            { name: "ヘリックス", img: "helix.png" },
+            { name: "ヘラ", img: "hela.png" },
+            { name: "ミーラ", img: "mymu.png" },
+            { name: "神眷の者", img: "seraph.png" },
+            { name: "ドラクーラ", img: "dracoola.png" },
+            { name: "ローラ", img: "rolla.png" },
+            { name: "ロキ", img: "loki.png" },
+            { name: "フィンクス", img: "phynx.png" },
+            { name: "オッタ", img: "otta.png" },
+            { name: "魔王アトレウス", img: "DKatreus.png" },
+            { name: "ソー", img: "thor.png" },
+            { name: "クレオ", img: "cleo.png" }
         ];
 
-        // 画面内のすべてのセレクトボックスに名前を流し込む
-        const selects = document.querySelectorAll('.hero-select');
-        
-        selects.forEach(select => {
-            heroes.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                select.appendChild(option);
-            });
+        // メインキャラクター選択用
+        const mainGrid = document.getElementById('main-hero-grid');
+        heroes.forEach(hero => {
+            const div = document.createElement('div');
+            div.className = "hero-card cursor-pointer bg-slate-800 p-1 rounded-lg border-2 border-transparent transition-all";
+            div.innerHTML = `
+                <img src="assets/${hero.img}" class="w-full aspect-square object-cover rounded-md" alt="${hero.name}">
+                <p class="text-[8px] text-center mt-1 truncate">${hero.name}</p>
+            `;
+            div.onclick = () => {
+                document.querySelectorAll('.hero-card').forEach(el => el.classList.remove('selected'));
+                div.classList.add('selected');
+            };
+            mainGrid.appendChild(div);
         });
+
+        // 継承選択用 (横スクロール形式)
+        const createInheritGrid = (elementId) => {
+            const grid = document.getElementById(elementId);
+            heroes.forEach(hero => {
+                const div = document.createElement('div');
+                div.className = "inherit-card flex-shrink-0 w-16 cursor-pointer bg-slate-800 p-1 rounded-lg border-2 border-transparent transition-all";
+                div.innerHTML = `
+                    <img src="assets/${hero.img}" class="w-full aspect-square object-cover rounded-md" alt="${hero.name}">
+                    <p class="text-[8px] text-center mt-1 truncate">${hero.name}</p>
+                `;
+                div.onclick = () => {
+                    document.querySelectorAll(`#${elementId} .inherit-card`).forEach(el => el.classList.remove('selected'));
+                    div.classList.add('selected');
+                };
+                grid.appendChild(div);
+            });
+        };
+
+        createInheritGrid('inherit1-grid');
+        createInheritGrid('inherit2-grid');
     </script>
 </body>
 </html>
