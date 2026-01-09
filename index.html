@@ -6,11 +6,9 @@
     <title>アーチャー伝説2 ビルド共有</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .custom-scrollbar::-webkit-scrollbar { height: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 10px; }
-        .selected { border-color: #4ade80 !important; background: rgba(74, 222, 128, 0.1); }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
+        .selected-border { border-color: #4ade80 !important; background: rgba(74, 222, 128, 0.1); }
     </style>
 </head>
 <body class="bg-[#0f172a] text-slate-100 min-h-screen pb-24 font-sans">
@@ -23,9 +21,19 @@
         
         <section>
             <h2 class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-widest flex items-center">
-                <span class="w-1 h-3 bg-green-500 mr-2"></span>Main Hero
+                <span class="w-1 h-3 bg-green-500 mr-2"></span>Characters
             </h2>
-            <div id="main-hero-grid" class="grid grid-cols-4 gap-2"></div>
+            <div class="grid grid-cols-3 gap-3">
+                <div onclick="openHeroModal('main')" id="slot-main" class="bg-slate-800 rounded-xl p-2 border-2 border-slate-700 aspect-square flex flex-col items-center justify-center cursor-pointer">
+                    <span class="text-[10px] text-slate-500">メイン</span>
+                </div>
+                <div onclick="openHeroModal('inherit1')" id="slot-inherit1" class="bg-slate-800 rounded-xl p-2 border-2 border-slate-700 aspect-square flex flex-col items-center justify-center cursor-pointer">
+                    <span class="text-[10px] text-slate-500">継承1</span>
+                </div>
+                <div onclick="openHeroModal('inherit2')" id="slot-inherit2" class="bg-slate-800 rounded-xl p-2 border-2 border-slate-700 aspect-square flex flex-col items-center justify-center cursor-pointer">
+                    <span class="text-[10px] text-slate-500">継承2</span>
+                </div>
+            </div>
         </section>
 
         <section>
@@ -55,27 +63,35 @@
         </section>
     </main>
 
+    <div id="heroModal" class="modal px-4" onclick="closeHeroModal()">
+        <div class="bg-slate-800 w-full max-w-md rounded-3xl p-4 border border-slate-600 shadow-2xl overflow-y-auto max-h-[80vh]" onclick="event.stopPropagation()">
+            <h3 class="text-center font-bold mb-4 text-green-500">ヒーローを選択</h3>
+            <div id="hero-selection-grid" class="grid grid-cols-4 gap-2">
+                </div>
+        </div>
+    </div>
+
     <div id="equipModal" class="modal px-6" onclick="closeEquipModal()">
         <div class="bg-slate-800 w-full max-w-sm rounded-3xl p-6 border border-slate-600 shadow-2xl" onclick="event.stopPropagation()">
-            <h3 id="modalTitle" class="text-center font-bold mb-6 text-yellow-500">シリーズを選択</h3>
+            <h3 id="equipModalTitle" class="text-center font-bold mb-6 text-yellow-500">シリーズを選択</h3>
             <div class="grid grid-cols-1 gap-4">
-                <button onclick="selectSeries('D')" class="flex items-center bg-slate-700 p-4 rounded-2xl hover:bg-slate-600 transition">
+                <button onclick="selectSeries('D')" class="flex items-center bg-slate-700 p-3 rounded-2xl hover:bg-slate-600 transition">
                     <img id="img-D" class="w-12 h-12 mr-4 object-contain">
-                    <span class="font-bold">ドラグーン シリーズ</span>
+                    <span class="font-bold">ドラグーン</span>
                 </button>
-                <button onclick="selectSeries('O')" class="flex items-center bg-slate-700 p-4 rounded-2xl hover:bg-slate-600 transition">
+                <button onclick="selectSeries('O')" class="flex items-center bg-slate-700 p-3 rounded-2xl hover:bg-slate-600 transition">
                     <img id="img-O" class="w-12 h-12 mr-4 object-contain">
-                    <span class="font-bold">神託 シリーズ</span>
+                    <span class="font-bold">神託</span>
                 </button>
-                <button onclick="selectSeries('G')" class="flex items-center bg-slate-700 p-4 rounded-2xl hover:bg-slate-600 transition">
+                <button onclick="selectSeries('G')" class="flex items-center bg-slate-700 p-3 rounded-2xl hover:bg-slate-600 transition">
                     <img id="img-G" class="w-12 h-12 mr-4 object-contain">
-                    <span class="font-bold">グリフォン シリーズ</span>
+                    <span class="font-bold">グリフォン</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <footer class="fixed bottom-0 left-0 w-full p-4 bg-[#1e293b]/90 backdrop-blur-md border-t border-slate-700">
+    <footer class="fixed bottom-0 left-0 w-full p-4 bg-[#1e293b]/90 backdrop-blur-md border-t border-slate-700 z-50">
         <button class="w-full bg-green-600 py-3 rounded-full font-bold shadow-lg">ビルドを共有する</button>
     </footer>
 
@@ -90,42 +106,51 @@
             { name: "ソー", img: "thor.png" }, { name: "クレオ", img: "cleo.png" }
         ];
 
-        // キャラ生成
-        const mainGrid = document.getElementById('main-hero-grid');
-        heroes.forEach(hero => {
-            const div = document.createElement('div');
-            div.className = "cursor-pointer bg-slate-800 p-1 rounded-lg border-2 border-transparent";
-            div.innerHTML = `<img src="assets/${hero.img}" class="w-full aspect-square object-cover rounded-md">`;
-            div.onclick = () => {
-                mainGrid.querySelectorAll('div').forEach(el => el.classList.remove('selected'));
-                div.classList.add('selected');
-            };
-            mainGrid.appendChild(div);
-        });
+        let currentHeroSlot = '';
+        let currentEquipSlot = '';
 
-        // 装備選択ロジック
-        let currentSlot = '';
+        // キャラモーダル制御
+        function openHeroModal(slot) {
+            currentHeroSlot = slot;
+            const grid = document.getElementById('hero-selection-grid');
+            grid.innerHTML = '';
+            heroes.forEach(hero => {
+                const div = document.createElement('div');
+                div.className = "cursor-pointer bg-slate-700 p-1 rounded-lg border-2 border-transparent hover:border-green-500";
+                div.innerHTML = `<img src="assets/${hero.img}" class="w-full aspect-square object-cover rounded-md">
+                                 <p class="text-[8px] text-center mt-1 truncate">${hero.name}</p>`;
+                div.onclick = () => selectHero(hero);
+                grid.appendChild(div);
+            });
+            document.getElementById('heroModal').classList.add('active');
+        }
 
+        function closeHeroModal() { document.getElementById('heroModal').classList.remove('active'); }
+
+        function selectHero(hero) {
+            const slot = document.getElementById(`slot-${currentHeroSlot}`);
+            slot.innerHTML = `<img src="assets/${hero.img}" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                              <p class="text-[8px] mt-1 text-green-400 font-bold">${hero.name}</p>`;
+            slot.classList.add('selected-border');
+            closeHeroModal();
+        }
+
+        // 装備モーダル制御
         function openEquipModal(slot) {
-            currentSlot = slot;
-            document.getElementById('modalTitle').innerText = `${slot.toUpperCase()} を選択`;
-            // モーダル内の画像プレビューを更新
+            currentEquipSlot = slot;
+            document.getElementById('equipModalTitle').innerText = `${slot.toUpperCase()} 選択`;
             document.getElementById('img-D').src = `assets/D_${slot}.png`;
             document.getElementById('img-O').src = `assets/O_${slot}.png`;
             document.getElementById('img-G').src = `assets/G_${slot}.png`;
             document.getElementById('equipModal').classList.add('active');
         }
 
-        function closeEquipModal() {
-            document.getElementById('equipModal').classList.remove('active');
-        }
+        function closeEquipModal() { document.getElementById('equipModal').classList.remove('active'); }
 
         function selectSeries(series) {
-            const slotElement = document.getElementById(`slot-${currentSlot}`);
-            const imgPath = `assets/${series}_${currentSlot}.png`;
-            
-            slotElement.innerHTML = `<img src="${imgPath}" class="h-full object-contain">`;
-            slotElement.style.borderColor = "#eab308"; // 選択されたら黄色枠
+            const slot = document.getElementById(`slot-${currentEquipSlot}`);
+            slot.innerHTML = `<img src="assets/${series}_${currentEquipSlot}.png" class="h-full object-contain">`;
+            slot.classList.add('selected-border');
             closeEquipModal();
         }
     </script>
