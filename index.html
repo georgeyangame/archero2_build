@@ -5,26 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>アーチャー伝説2 ビルド共有</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .game-card { background: linear-gradient(145deg, #2d3748, #1a202c); }
+        select { appearance: none; cursor: pointer; }
+    </style>
 </head>
-<body class="bg-slate-900 text-white p-4">
-    <h1 class="text-xl font-bold border-b border-green-500 mb-4">Archer2 Build Clan</h1>
-    
-    <div class="grid grid-cols-1 gap-4">
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-            <p class="text-sm text-green-400 mb-2">Main Character</p>
-            <select class="bg-slate-700 w-full p-2 rounded">
-                <option>選択してください</option>
-                <option>キャラ1</option>
-                <option>キャラ2</option>
-                </select>
-        </div>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 font-sans">
 
-        <div class="grid grid-cols-2 gap-2">
-            <div class="bg-slate-800 p-2 rounded border border-slate-700 text-center">武器</div>
-            <div class="bg-slate-800 p-2 rounded border border-slate-700 text-center">アミュレット</div>
-        </div>
-    </div>
-    
-    <button class="mt-6 w-full bg-green-600 p-3 rounded-full font-bold">ビルドを共有する</button>
+    <header class="text-center mb-6">
+        <h1 class="text-2xl font-black text-green-500 tracking-tighter">ARCHER 2 BUILDER</h1>
+        <p class="text-xs text-slate-400">クラン専用ビルド共有ツール</p>
+    </header>
+
+    <main class="max-w-md mx-auto space-y-6">
+        
+        <section class="game-card p-5 rounded-2xl shadow-xl border border-slate-700">
+            <h2 class="text-sm font-bold text-green-400 mb-4 flex items-center">
+                <span class="mr-2">👤</span> キャラクター構成
+            </h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-1 ml-1">Main Hero</label>
+                    <select id="mainHero" class="hero-select bg-slate-800 w-full p-3 rounded-xl border border-slate-600 focus:border-green-500 outline-none transition-all">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-1 ml-1">Inherit 1</label>
+                        <select id="inherit1" class="hero-select bg-slate-800 w-full p-2.5 rounded-xl border border-slate-600 text-sm outline-none">
+                            <option value="">なし</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-1 ml-1">Inherit 2</label>
+                        <select id="inherit2" class="hero-select bg-slate-800 w-full p-2.5 rounded-xl border border-slate-600 text-sm outline-none">
+                            <option value="">なし</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="opacity-50">
+            <h2 class="text-sm font-bold text-slate-400 mb-2">EQUIPMENT (Coming Soon...)</h2>
+            <div class="grid grid-cols-3 gap-2">
+                <div class="aspect-square bg-slate-800 rounded-lg border border-dashed border-slate-700 flex items-center justify-center text-[10px]">武器</div>
+                <div class="aspect-square bg-slate-800 rounded-lg border border-dashed border-slate-700 flex items-center justify-center text-[10px]">アミュ</div>
+                <div class="aspect-square bg-slate-800 rounded-lg border border-dashed border-slate-700 flex items-center justify-center text-[10px]">指輪</div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // キャラクターリスト
+        const heroes = [
+            "アレックス", "ネコ忍者", "ヘリックス", "ヘラ", "ミーラ", 
+            "神眷の者", "ドラクーラ", "ローラ", "ロキ", "フィンクス", 
+            "オッター", "魔王アトレウス", "ソー", "クレオ"
+        ];
+
+        // 画面内のすべてのセレクトボックスに名前を流し込む
+        const selects = document.querySelectorAll('.hero-select');
+        
+        selects.forEach(select => {
+            heroes.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                select.appendChild(option);
+            });
+        });
+    </script>
 </body>
 </html>
